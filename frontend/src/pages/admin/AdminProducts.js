@@ -175,17 +175,25 @@ const AdminProducts = () => {
                   />
                 </div>
                 <div>
-                  <Label>Image URL</Label>
-                  <Input
-                    value={formData.images[0].url}
-                    onChange={(e) => setFormData({
-                      ...formData,
-                      images: [{ url: e.target.value, alt: formData.name }]
-                    })}
-                    placeholder="https://example.com/image.jpg"
-                    required
-                    data-testid="product-image-input"
+                  <Label>Product Images</Label>
+                  <p className="text-sm text-gray-600 mb-2">Upload one or multiple images (max 5MB each)</p>
+                  <FileUpload
+                    onUpload={(files) => {
+                      const imageArray = Array.isArray(files) ? files : [files];
+                      setFormData({
+                        ...formData,
+                        images: imageArray.map(file => ({ url: file.data, alt: formData.name }))
+                      });
+                    }}
+                    accept="image/*"
+                    multiple={true}
+                    label="Upload Product Images"
                   />
+                  {formData.images.length > 0 && formData.images[0].url && (
+                    <div className="mt-2 text-sm text-gray-600">
+                      {formData.images.length} image(s) selected
+                    </div>
+                  )}
                 </div>
                 <div className="flex items-center gap-2">
                   <input
