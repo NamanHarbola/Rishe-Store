@@ -12,6 +12,7 @@ const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
 const HomePage = () => {
   const navigate = useNavigate();
+  const { isDark } = useTheme();
   const [featuredProducts, setFeaturedProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [landingSettings, setLandingSettings] = useState(null);
