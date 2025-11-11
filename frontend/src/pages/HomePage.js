@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { useState, useEffect, useRef } from 'react';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
-import { ShoppingBag, Truck, Shield, Award, ArrowRight } from 'lucide-react';
+import { ShoppingBag, Truck, Shield, Award, ArrowRight, Sparkles } from 'lucide-react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import axios from 'axios';
@@ -12,10 +12,30 @@ const HomePage = () => {
   const navigate = useNavigate();
   const [featuredProducts, setFeaturedProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [landingSettings, setLandingSettings] = useState(null);
+  const heroRef = useRef(null);
+  
+  const { scrollYProgress } = useScroll({
+    target: heroRef,
+    offset: ["start start", "end start"]
+  });
+  
+  const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
+  const scale = useTransform(scrollYProgress, [0, 0.5], [1, 0.95]);
 
   useEffect(() => {
     fetchFeaturedProducts();
+    fetchLandingSettings();
   }, []);
+
+  const fetchLandingSettings = async () => {
+    try {
+      const response = await axios.get(`${API}/landing-page`);
+      setLandingSettings(response.data);
+    } catch (error) {
+      console.error('Error fetching landing settings:', error);
+    }
+  };
 
   const fetchFeaturedProducts = async () => {
     try {
