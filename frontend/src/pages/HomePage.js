@@ -252,35 +252,11 @@ const HomePage = () => {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {featuredProducts.map((product, index) => (
-                <motion.div
+                <ProductCard 
                   key={product.id}
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: index * 0.1 }}
-                  className="group cursor-pointer"
-                  onClick={() => navigate(`/product/${product.id}`)}
-                  data-testid={`featured-product-${index}`}
-                >
-                  <div className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
-                    <div className="relative overflow-hidden aspect-square">
-                      <img
-                        src={product.images[0]?.url || '/placeholder.jpg'}
-                        alt={product.name}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                    </div>
-                    <div className="p-6">
-                      <h3 className="text-xl font-semibold mb-2 playfair">{product.name}</h3>
-                      <p className="text-gray-600 mb-3 line-clamp-2">{product.description}</p>
-                      <div className="flex justify-between items-center">
-                        <span className="text-2xl font-bold text-emerald-600">₹{product.price}</span>
-                        <span className="text-sm text-gray-500">{product.variants?.length} colors</span>
-                      </div>
-                    </div>
-                  </div>
-                </motion.div>
+                  product={product}
+                  index={index}
+                />
               ))}
             </div>
           )}
