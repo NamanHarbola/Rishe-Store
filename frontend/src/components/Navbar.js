@@ -36,14 +36,20 @@ const Navbar = () => {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-8">
-            <Link to="/" className="text-gray-700 hover:text-emerald-600 transition-colors font-medium" data-testid="nav-home">
+            <Link to="/" className={`transition-colors font-medium hover:text-emerald-600 ${
+              isDark ? 'text-gray-300' : 'text-gray-700'
+            }`} data-testid="nav-home">
               Home
             </Link>
-            <Link to="/products" className="text-gray-700 hover:text-emerald-600 transition-colors font-medium" data-testid="nav-products">
+            <Link to="/products" className={`transition-colors font-medium hover:text-emerald-600 ${
+              isDark ? 'text-gray-300' : 'text-gray-700'
+            }`} data-testid="nav-products">
               Products
             </Link>
             {user && (
-              <Link to="/orders" className="text-gray-700 hover:text-emerald-600 transition-colors font-medium" data-testid="nav-orders">
+              <Link to="/orders" className={`transition-colors font-medium hover:text-emerald-600 ${
+                isDark ? 'text-gray-300' : 'text-gray-700'
+              }`} data-testid="nav-orders">
                 Orders
               </Link>
             )}
@@ -51,13 +57,18 @@ const Navbar = () => {
 
           {/* Right Icons */}
           <div className="hidden md:flex items-center gap-4">
+            {/* Theme Toggle */}
+            <ThemeToggle />
+            
             {/* Cart */}
             <button
               onClick={() => navigate('/cart')}
-              className="relative p-2 hover:bg-emerald-50 rounded-full transition-colors"
+              className={`relative p-2 hover:bg-emerald-50 rounded-full transition-colors ${
+                isDark ? 'hover:bg-gray-800' : 'hover:bg-emerald-50'
+              }`}
               data-testid="nav-cart-btn"
             >
-              <ShoppingCart className="text-gray-700" size={24} />
+              <ShoppingCart className={isDark ? 'text-gray-300' : 'text-gray-700'} size={24} />
               {cartCount > 0 && (
                 <span className="absolute -top-1 -right-1 bg-emerald-600 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
                   {cartCount}
