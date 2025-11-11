@@ -17,6 +17,7 @@ import {
 const Navbar = () => {
   const { user, signInWithGoogle, signOut } = useAuth();
   const { cartCount } = useCart();
+  const { isDark } = useTheme();
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
