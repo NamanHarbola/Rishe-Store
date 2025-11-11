@@ -75,7 +75,9 @@ const HomePage = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-[#faf8f5]">
+    <div className={`min-h-screen transition-colors duration-300 ${
+      isDark ? 'bg-gray-900' : 'bg-[#faf8f5]'
+    }`}>
       <Navbar />
       
       {/* Hero Section with Fade */}
