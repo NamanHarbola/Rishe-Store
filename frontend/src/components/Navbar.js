@@ -22,12 +22,16 @@ const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
-    <nav className="sticky top-0 z-50 glass border-b border-gray-200">
+    <nav className={`sticky top-0 z-50 glass border-b transition-colors duration-300 ${
+      isDark ? 'border-gray-700 bg-gray-900/70' : 'border-gray-200 bg-white/70'
+    }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center" data-testid="nav-logo">
-            <h1 className="text-2xl font-bold playfair gradient-text">Rishè</h1>
+            <h1 className={`text-2xl font-bold playfair gradient-text ${isDark ? 'text-emerald-400' : ''}`}>
+              Rishè
+            </h1>
           </Link>
 
           {/* Desktop Navigation */}
