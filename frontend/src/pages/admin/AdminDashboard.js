@@ -54,7 +54,8 @@ const AdminDashboard = () => {
     { icon: <Package size={24} />, title: 'Products', description: 'Manage products', link: '/admin/products', color: 'emerald' },
     { icon: <ShoppingCart size={24} />, title: 'Orders', description: 'View & manage orders', link: '/admin/orders', color: 'blue' },
     { icon: <ShoppingBag size={24} />, title: 'Inventory', description: 'Track stock levels', link: '/admin/inventory', color: 'purple' },
-    { icon: <BarChart3 size={24} />, title: 'Analytics', description: 'Sales & reports', link: '/admin/analytics', color: 'orange' }
+    { icon: <BarChart3 size={24} />, title: 'Analytics', description: 'Sales & reports', link: '/admin/analytics', color: 'orange' },
+    { icon: <TrendingUp size={24} />, title: 'Landing Page', description: 'Customize homepage', link: '/admin/landing-page', color: 'pink' }
   ];
 
   return (
