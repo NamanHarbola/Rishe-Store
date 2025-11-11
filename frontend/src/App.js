@@ -34,6 +34,7 @@ function App() {
             <Route path="/admin/orders" element={<AdminOrders />} />
             <Route path="/admin/inventory" element={<AdminInventory />} />
             <Route path="/admin/analytics" element={<AdminAnalytics />} />
+            <Route path="/admin/landing-page" element={<AdminLandingPage />} />
           </Routes>
         </BrowserRouter>
       </CartProvider>
