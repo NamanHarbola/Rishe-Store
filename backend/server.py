@@ -349,6 +349,45 @@ async def get_inventory_analytics(user: dict = Depends(verify_firebase_token)):
     
     return inventory_data
 
+# Landing Page Settings
+class LandingPageSettings(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = "landing_page"
+    hero_media: Optional[str] = None  # base64 encoded image or video
+    hero_media_type: str = "image"  # "image" or "video"
+    hero_title: str = "Welcome to Rishè"
+    hero_subtitle: str = "Elevate your style with our premium collection of handcrafted shirts."
+    updated_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
+
+class LandingPageUpdate(BaseModel):
+    hero_media: Optional[str] = None
+    hero_media_type: str = "image"
+    hero_title: Optional[str] = None
+    hero_subtitle: Optional[str] = None
+
+@api_router.get("/landing-page")
+async def get_landing_page_settings():
+    settings = await db.landing_page.find_one({"id": "landing_page"}, {"_id": 0})
+    if not settings:
+        # Return default settings
+        default_settings = LandingPageSettings()
+        return default_settings.model_dump()
+    return settings
+
+@api_router.put("/landing-page")
+async def update_landing_page_settings(settings: LandingPageUpdate, user: dict = Depends(verify_firebase_token)):
+    update_data = {k: v for k, v in settings.model_dump().items() if v is not None}
+    update_data["updated_at"] = datetime.now(timezone.utc).isoformat()
+    
+    result = await db.landing_page.update_one(
+        {"id": "landing_page"},
+        {"$set": update_data},
+        upsert=True
+    )
+    
+    updated_settings = await db.landing_page.find_one({"id": "landing_page"}, {"_id": 0})
+    return updated_settings
+
 # Health check
 @api_router.get("/")
 async def root():
