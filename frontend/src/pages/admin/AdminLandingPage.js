@@ -42,12 +42,14 @@ const AdminLandingPage = () => {
   };
 
   const handleMediaUpload = (file) => {
+    console.log('Media upload received:', file);
     if (file) {
       setSettings({
         ...settings,
         hero_media: file.data,
         hero_media_type: file.type.startsWith('video') ? 'video' : 'image'
       });
+      console.log('Settings updated with media');
     }
   };
 
