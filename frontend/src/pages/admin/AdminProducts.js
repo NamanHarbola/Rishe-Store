@@ -100,9 +100,42 @@ const AdminProducts = () => {
       category: 'shirts',
       featured: false,
       images: [{ url: '', alt: '' }],
-      variants: [{ color: '', color_code: '#000000', sizes: { S: 0, M: 0, L: 0, XL: 0, XXL: 0 } }]
+      variants: [{ color: 'White', color_code: '#FFFFFF', sizes: { S: 0, M: 0, L: 0, XL: 0, XXL: 0 } }]
     });
     setEditingProduct(null);
+    setActiveVariantIndex(0);
+  };
+
+  const addVariant = () => {
+    setFormData({
+      ...formData,
+      variants: [...formData.variants, { color: '', color_code: '#000000', sizes: { S: 0, M: 0, L: 0, XL: 0, XXL: 0 } }]
+    });
+    setActiveVariantIndex(formData.variants.length);
+  };
+
+  const removeVariant = (index) => {
+    if (formData.variants.length === 1) {
+      toast.error('At least one color variant is required');
+      return;
+    }
+    const newVariants = formData.variants.filter((_, i) => i !== index);
+    setFormData({ ...formData, variants: newVariants });
+    if (activeVariantIndex >= newVariants.length) {
+      setActiveVariantIndex(newVariants.length - 1);
+    }
+  };
+
+  const updateVariant = (index, field, value) => {
+    const newVariants = [...formData.variants];
+    newVariants[index] = { ...newVariants[index], [field]: value };
+    setFormData({ ...formData, variants: newVariants });
+  };
+
+  const updateVariantSize = (variantIndex, size, stock) => {
+    const newVariants = [...formData.variants];
+    newVariants[variantIndex].sizes[size] = parseInt(stock) || 0;
+    setFormData({ ...formData, variants: newVariants });
   };
 
   const handleEdit = (product) => {
