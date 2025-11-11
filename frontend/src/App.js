@@ -14,6 +14,7 @@ import AdminProducts from './pages/admin/AdminProducts';
 import AdminOrders from './pages/admin/AdminOrders';
 import AdminInventory from './pages/admin/AdminInventory';
 import AdminAnalytics from './pages/admin/AdminAnalytics';
+import AdminLandingPage from './pages/admin/AdminLandingPage';
 
 function App() {
   return (
