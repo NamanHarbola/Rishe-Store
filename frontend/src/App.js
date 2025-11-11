@@ -2,6 +2,7 @@ import './App.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
+import { ThemeProvider } from './context/ThemeContext';
 import { Toaster } from 'sonner';
 import HomePage from './pages/HomePage';
 import ProductsPage from './pages/ProductsPage';
