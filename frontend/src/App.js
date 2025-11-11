@@ -19,11 +19,12 @@ import AdminLandingPage from './pages/admin/AdminLandingPage';
 
 function App() {
   return (
-    <AuthProvider>
-      <CartProvider>
-        <BrowserRouter>
-          <Toaster position="top-right" richColors />
-          <Routes>
+    <ThemeProvider>
+      <AuthProvider>
+        <CartProvider>
+          <BrowserRouter>
+            <Toaster position="top-right" richColors />
+            <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/products" element={<ProductsPage />} />
             <Route path="/product/:id" element={<ProductDetailPage />} />
