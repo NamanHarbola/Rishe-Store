@@ -75,24 +75,54 @@ const HomePage = () => {
     <div className="min-h-screen bg-[#faf8f5]">
       <Navbar />
       
-      {/* Hero Section */}
-      <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
-        {/* Background Gradient */}
-        <div className="absolute inset-0 bg-gradient-to-br from-emerald-50 via-[#faf8f5] to-beige-100" />
-        
-        {/* Decorative Elements */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0 }}
-          animate={{ opacity: 0.1, scale: 1 }}
-          transition={{ duration: 1.5 }}
-          className="absolute top-20 right-20 w-64 h-64 bg-emerald-500 rounded-full blur-3xl"
-        />
-        <motion.div
-          initial={{ opacity: 0, scale: 0 }}
-          animate={{ opacity: 0.1, scale: 1 }}
-          transition={{ duration: 1.5, delay: 0.3 }}
-          className="absolute bottom-20 left-20 w-96 h-96 bg-emerald-300 rounded-full blur-3xl"
-        />
+      {/* Hero Section with Fade */}
+      <motion.section 
+        ref={heroRef}
+        style={{ opacity, scale }}
+        className="relative min-h-[100vh] flex items-center justify-center overflow-hidden"
+      >
+        {/* Background Media */}
+        {landingSettings?.hero_media ? (
+          <div className="absolute inset-0 z-0">
+            {landingSettings.hero_media_type === 'video' ? (
+              <video
+                autoPlay
+                loop
+                muted
+                playsInline
+                className="w-full h-full object-cover"
+              >
+                <source src={landingSettings.hero_media} type="video/mp4" />
+              </video>
+            ) : (
+              <img
+                src={landingSettings.hero_media}
+                alt="Hero"
+                className="w-full h-full object-cover"
+              />
+            )}
+            <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-black/40" />
+          </div>
+        ) : (
+          <>
+            {/* Default Background with Gradient */}
+            <div className="absolute inset-0 bg-gradient-to-br from-emerald-50 via-[#faf8f5] to-beige-100" />
+            
+            {/* Decorative Elements */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0 }}
+              animate={{ opacity: 0.1, scale: 1 }}
+              transition={{ duration: 1.5 }}
+              className="absolute top-20 right-20 w-64 h-64 bg-emerald-500 rounded-full blur-3xl"
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0 }}
+              animate={{ opacity: 0.1, scale: 1 }}
+              transition={{ duration: 1.5, delay: 0.3 }}
+              className="absolute bottom-20 left-20 w-96 h-96 bg-emerald-300 rounded-full blur-3xl"
+            />
+          </>
+        )}
 
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center">
           <motion.div
@@ -100,32 +130,55 @@ const HomePage = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="flex items-center justify-center gap-2 mb-4"
+            >
+              <Sparkles className={`${landingSettings?.hero_media ? 'text-white' : 'text-emerald-600'}`} size={24} />
+              <span className={`text-sm font-semibold tracking-wider uppercase ${landingSettings?.hero_media ? 'text-white' : 'text-emerald-600'}`}>
+                Premium Quality
+              </span>
+              <Sparkles className={`${landingSettings?.hero_media ? 'text-white' : 'text-emerald-600'}`} size={24} />
+            </motion.div>
+            
             <h1 
-              className="text-5xl sm:text-6xl lg:text-7xl font-bold mb-6 playfair"
+              className={`text-5xl sm:text-6xl lg:text-8xl font-bold mb-6 playfair ${landingSettings?.hero_media ? 'text-white drop-shadow-2xl' : ''}`}
               data-testid="hero-title"
             >
-              Welcome to <span className="gradient-text">Rishè</span>
+              {landingSettings?.hero_title ? (
+                <>
+                  {landingSettings.hero_title.split(' ').slice(0, -1).join(' ')}{' '}
+                  <span className={landingSettings?.hero_media ? 'text-emerald-400' : 'gradient-text'}>
+                    {landingSettings.hero_title.split(' ').slice(-1)}
+                  </span>
+                </>
+              ) : (
+                <>
+                  Welcome to <span className="gradient-text">Rishè</span>
+                </>
+              )}
             </h1>
-            <p className="text-lg sm:text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-              Elevate your style with our premium collection of handcrafted shirts.
-              Where elegance meets comfort.
+            <p className={`text-lg sm:text-xl mb-8 max-w-2xl mx-auto ${landingSettings?.hero_media ? 'text-white drop-shadow-lg' : 'text-gray-600'}`}>
+              {landingSettings?.hero_subtitle || "Elevate your style with our premium collection of handcrafted shirts. Where elegance meets comfort."}
             </p>
             <div className="flex gap-4 justify-center flex-wrap">
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => navigate('/products')}
-                className="btn-primary flex items-center gap-2"
+                className="btn-primary flex items-center gap-2 text-lg px-8 py-4"
                 data-testid="shop-now-btn"
               >
                 Shop Now
-                <ArrowRight size={20} />
+                <ArrowRight size={24} />
               </motion.button>
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => navigate('/products')}
-                className="btn-secondary"
+                className={`btn-secondary text-lg px-8 py-4 ${landingSettings?.hero_media ? 'bg-white/90 hover:bg-white border-white text-gray-900' : ''}`}
                 data-testid="explore-collection-btn"
               >
                 Explore Collection
@@ -133,7 +186,19 @@ const HomePage = () => {
             </div>
           </motion.div>
         </div>
-      </section>
+
+        {/* Scroll Indicator */}
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1, duration: 0.8, repeat: Infinity, repeatType: "reverse" }}
+          className="absolute bottom-10 left-1/2 transform -translate-x-1/2"
+        >
+          <div className={`w-6 h-10 border-2 ${landingSettings?.hero_media ? 'border-white' : 'border-emerald-600'} rounded-full flex justify-center`}>
+            <div className={`w-1.5 h-3 ${landingSettings?.hero_media ? 'bg-white' : 'bg-emerald-600'} rounded-full mt-2`} />
+          </div>
+        </motion.div>
+      </motion.section>
 
       {/* Features Section */}
       <section className="py-20 bg-white" data-testid="features-section">
