@@ -1,5 +1,212 @@
 import { motion } from 'framer-motion';
-import { Heart, ShoppingCart, Eye, Sparkles } from 'lucide-react';
+import { Heart, ShoppingCart, Sparkles } from 'lucide-react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useTheme } from '../context/ThemeContext';\n\nconst ProductCard = ({ product, index, onAddToCart, className = '' }) => {\n  const navigate = useNavigate();\n  const { isDark } = useTheme();\n  const [isHovered, setIsHovered] = useState(false);\n  const [imageLoaded, setImageLoaded] = useState(false);\n  const [currentImageIndex, setCurrentImageIndex] = useState(0);\n\n  const handleProductClick = () => {\n    navigate(`/product/${product.id}`);\n  };\n\n  const handleAddToCart = (e) => {\n    e.stopPropagation();\n    if (onAddToCart) {\n      onAddToCart(product);\n    }\n  };\n\n  const totalStock = product.variants?.reduce((total, variant) => {\n    return total + Object.values(variant.sizes).reduce((sum, stock) => sum + stock, 0);\n  }, 0) || 0;\n\n  return (\n    <motion.div\n      initial={{ opacity: 0, y: 30 }}\n      animate={{ opacity: 1, y: 0 }}\n      transition={{ delay: index * 0.1, duration: 0.6 }}\n      onHoverStart={() => setIsHovered(true)}\n      onHoverEnd={() => setIsHovered(false)}\n      className={`group cursor-pointer ${className}`}\n      onClick={handleProductClick}\n      data-testid={`product-card-${index}`}\n    >\n      <motion.div\n        whileHover={{ \n          y: -12,\n          scale: 1.02,\n          transition: { duration: 0.3, ease: \"easeOut\" }\n        }}\n        className={`relative overflow-hidden rounded-2xl transition-all duration-500 ${\n          isDark \n            ? 'bg-gray-800 shadow-xl hover:shadow-2xl hover:shadow-emerald-500/10' \n            : 'bg-white shadow-lg hover:shadow-2xl hover:shadow-emerald-500/15'\n        }`}\n      >\n        {/* Image Container */}\n        <div className=\"relative overflow-hidden aspect-square\">\n          {/* Main Product Image */}\n          <motion.img\n            src={product.images[currentImageIndex]?.url || '/placeholder.jpg'}\n            alt={product.name}\n            className=\"w-full h-full object-cover\"\n            initial={{ scale: 1 }}\n            whileHover={{ scale: 1.1 }}\n            transition={{ duration: 0.6, ease: \"easeOut\" }}\n            onLoad={() => setImageLoaded(true)}\n          />\n          \n          {/* Overlay Gradient */}\n          <motion.div\n            initial={{ opacity: 0 }}\n            animate={{ opacity: isHovered ? 1 : 0 }}\n            transition={{ duration: 0.3 }}\n            className=\"absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent\"\n          />\n          \n          {/* Status Badges */}\n          <div className=\"absolute top-4 left-4 flex flex-col gap-2\">\n            {product.featured && (\n              <motion.div\n                initial={{ scale: 0 }}\n                animate={{ scale: 1 }}\n                transition={{ delay: 0.2, type: \"spring\", stiffness: 500 }}\n                className=\"bg-gradient-to-r from-emerald-500 to-emerald-600 text-white px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1\"\n              >\n                <Sparkles size={12} />\n                Featured\n              </motion.div>\n            )}\n            \n            {totalStock === 0 && (\n              <div className=\"bg-red-500 text-white px-3 py-1 rounded-full text-xs font-semibold\">\n                Out of Stock\n              </div>\n            )}\n            \n            {totalStock > 0 && totalStock < 10 && (\n              <div className=\"bg-orange-500 text-white px-3 py-1 rounded-full text-xs font-semibold\">\n                Only {totalStock} left\n              </div>\n            )}\n          </div>\n          \n          {/* Quick Actions */}\n          <motion.div\n            initial={{ opacity: 0, scale: 0.8 }}\n            animate={{ \n              opacity: isHovered ? 1 : 0,\n              scale: isHovered ? 1 : 0.8\n            }}\n            transition={{ duration: 0.3, delay: 0.1 }}\n            className=\"absolute top-4 right-4 flex flex-col gap-2\"\n          >\n            <motion.button\n              whileHover={{ scale: 1.1, rotate: 5 }}\n              whileTap={{ scale: 0.9 }}\n              className=\"bg-white/90 backdrop-blur-sm p-2 rounded-full shadow-lg hover:bg-white transition-all\"\n              onClick={(e) => {\n                e.stopPropagation();\n              }}\n            >\n              <Heart size={16} className=\"text-gray-600 hover:text-red-500\" />\n            </motion.button>\n          </motion.div>\n        </div>\n        \n        {/* Content */}\n        <div className=\"p-6\">\n          {/* Product Name */}\n          <motion.h3 \n            className={`text-xl font-semibold mb-2 playfair transition-colors ${\n              isDark ? 'text-white group-hover:text-emerald-400' : 'text-gray-900 group-hover:text-emerald-600'\n            }`}\n            animate={{ \n              scale: isHovered ? 1.02 : 1,\n            }}\n            transition={{ duration: 0.3 }}\n          >\n            {product.name}\n          </motion.h3>\n          \n          {/* Description */}\n          <p className={`mb-3 line-clamp-2 text-sm transition-colors ${\n            isDark ? 'text-gray-400' : 'text-gray-600'\n          }`}>\n            {product.description}\n          </p>\n          \n          {/* Price and Colors */}\n          <motion.div \n            className=\"flex items-center justify-between mb-4\"\n            animate={{ y: isHovered ? -2 : 0 }}\n            transition={{ duration: 0.3 }}\n          >\n            <span className=\"text-2xl font-bold text-emerald-600\">\n              ₹{product.price}\n            </span>\n            \n            {/* Color Swatches */}\n            <div className=\"flex gap-1\">\n              {product.variants?.slice(0, 3).map((variant, i) => (\n                <motion.div\n                  key={i}\n                  initial={{ scale: 0.8, opacity: 0.8 }}\n                  animate={{ \n                    scale: isHovered ? 1.1 : 0.9,\n                    opacity: isHovered ? 1 : 0.8\n                  }}\n                  transition={{ delay: i * 0.05 }}\n                  className=\"w-6 h-6 rounded-full border-2 border-gray-300 shadow-sm\"\n                  style={{ backgroundColor: variant.color_code }}\n                  title={variant.color}\n                />\n              ))}\n              {product.variants?.length > 3 && (\n                <div className={`text-xs flex items-center ml-1 ${\n                  isDark ? 'text-gray-400' : 'text-gray-500'\n                }`}>\n                  +{product.variants.length - 3}\n                </div>\n              )}\n            </div>\n          </motion.div>\n          \n          {/* Stock Info */}\n          <div className={`text-center text-xs mb-4 ${\n            isDark ? 'text-gray-400' : 'text-gray-500'\n          }`}>\n            {totalStock > 0 ? `${totalStock} in stock` : 'Out of stock'}\n          </div>\n          \n          {/* Quick Add to Cart */}\n          <motion.button\n            whileHover={{ scale: 1.02 }}\n            whileTap={{ scale: 0.98 }}\n            initial={{ opacity: 0, y: 10 }}\n            animate={{ \n              opacity: isHovered ? 1 : 0,\n              y: isHovered ? 0 : 10\n            }}\n            transition={{ duration: 0.3, delay: 0.1 }}\n            onClick={handleAddToCart}\n            disabled={totalStock === 0}\n            className={`\n              w-full py-2.5 px-4 rounded-xl font-semibold transition-all duration-300\n              flex items-center justify-center gap-2 text-sm\n              ${totalStock === 0 \n                ? 'bg-gray-300 text-gray-500 cursor-not-allowed' \n                : 'bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white shadow-lg hover:shadow-xl'\n              }\n            `}\n          >\n            <ShoppingCart size={16} />\n            Quick Add\n          </motion.button>\n        </div>\n        \n        {/* Shimmer Effect */}\n        <motion.div\n          initial={{ x: '-100%' }}\n          animate={{ x: isHovered ? '100%' : '-100%' }}\n          transition={{ duration: 0.8, ease: \"easeInOut\" }}\n          className=\"absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent pointer-events-none\"\n        />\n      </motion.div>\n    </motion.div>\n  );\n};\n\nexport default ProductCard;
+import { useTheme } from '../context/ThemeContext';
+
+const ProductCard = ({ product, index }) => {
+  const navigate = useNavigate();
+  const { isDark } = useTheme();
+  const [isHovered, setIsHovered] = useState(false);
+
+  const handleProductClick = () => {
+    navigate(`/product/${product.id}`);
+  };
+
+  const totalStock = product.variants?.reduce((total, variant) => {
+    return total + Object.values(variant.sizes).reduce((sum, stock) => sum + stock, 0);
+  }, 0) || 0;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: index * 0.1, duration: 0.6 }}
+      onHoverStart={() => setIsHovered(true)}
+      onHoverEnd={() => setIsHovered(false)}
+      className="group cursor-pointer"
+      onClick={handleProductClick}
+      data-testid={`featured-product-${index}`}
+    >
+      <motion.div
+        whileHover={{ 
+          y: -12,
+          scale: 1.02,
+          transition: { duration: 0.3, ease: "easeOut" }
+        }}
+        className={`relative overflow-hidden rounded-2xl transition-all duration-500 ${
+          isDark 
+            ? 'bg-gray-800 shadow-xl hover:shadow-2xl hover:shadow-emerald-500/10' 
+            : 'bg-white shadow-lg hover:shadow-2xl hover:shadow-emerald-500/15'
+        }`}
+      >
+        {/* Image Container */}
+        <div className="relative overflow-hidden aspect-square">
+          <motion.img
+            src={product.images[0]?.url || '/placeholder.jpg'}
+            alt={product.name}
+            className="w-full h-full object-cover"
+            initial={{ scale: 1 }}
+            whileHover={{ scale: 1.1 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+          />
+          
+          {/* Overlay Gradient */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: isHovered ? 1 : 0 }}
+            transition={{ duration: 0.3 }}
+            className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"
+          />
+          
+          {/* Status Badges */}
+          <div className="absolute top-4 left-4 flex flex-col gap-2">
+            {product.featured && (
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ delay: 0.2, type: "spring", stiffness: 500 }}
+                className="bg-gradient-to-r from-emerald-500 to-emerald-600 text-white px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1"
+              >
+                <Sparkles size={12} />
+                Featured
+              </motion.div>
+            )}
+            
+            {totalStock === 0 && (
+              <div className="bg-red-500 text-white px-3 py-1 rounded-full text-xs font-semibold">
+                Out of Stock
+              </div>
+            )}
+            
+            {totalStock > 0 && totalStock < 10 && (
+              <div className="bg-orange-500 text-white px-3 py-1 rounded-full text-xs font-semibold">
+                Only {totalStock} left
+              </div>
+            )}
+          </div>
+          
+          {/* Heart Button */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ 
+              opacity: isHovered ? 1 : 0,
+              scale: isHovered ? 1 : 0.8
+            }}
+            transition={{ duration: 0.3, delay: 0.1 }}
+            className="absolute top-4 right-4"
+          >
+            <motion.button
+              whileHover={{ scale: 1.1, rotate: 5 }}
+              whileTap={{ scale: 0.9 }}
+              className="bg-white/90 backdrop-blur-sm p-2 rounded-full shadow-lg hover:bg-white transition-all"
+              onClick={(e) => {
+                e.stopPropagation();
+              }}
+            >
+              <Heart size={16} className="text-gray-600 hover:text-red-500" />
+            </motion.button>
+          </motion.div>
+        </div>
+        
+        {/* Content */}
+        <div className="p-6">
+          <motion.h3 
+            className={`text-xl font-semibold mb-2 playfair transition-colors ${
+              isDark ? 'text-white group-hover:text-emerald-400' : 'text-gray-900 group-hover:text-emerald-600'
+            }`}
+            animate={{ 
+              scale: isHovered ? 1.02 : 1,
+            }}
+            transition={{ duration: 0.3 }}
+          >
+            {product.name}
+          </motion.h3>
+          
+          <p className={`mb-3 line-clamp-2 text-sm transition-colors ${
+            isDark ? 'text-gray-400' : 'text-gray-600'
+          }`}>
+            {product.description}
+          </p>
+          
+          <motion.div 
+            className="flex items-center justify-between mb-4"
+            animate={{ y: isHovered ? -2 : 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            <span className="text-2xl font-bold text-emerald-600">
+              ₹{product.price}
+            </span>
+            
+            <div className="flex gap-1">
+              {product.variants?.slice(0, 3).map((variant, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ scale: 0.8, opacity: 0.8 }}
+                  animate={{ 
+                    scale: isHovered ? 1.1 : 0.9,
+                    opacity: isHovered ? 1 : 0.8
+                  }}
+                  transition={{ delay: i * 0.05 }}
+                  className="w-6 h-6 rounded-full border-2 border-gray-300 shadow-sm"
+                  style={{ backgroundColor: variant.color_code }}
+                  title={variant.color}
+                />
+              ))}
+              {product.variants?.length > 3 && (
+                <div className={`text-xs flex items-center ml-1 ${
+                  isDark ? 'text-gray-400' : 'text-gray-500'
+                }`}>
+                  +{product.variants.length - 3}
+                </div>
+              )}
+            </div>
+          </motion.div>
+          
+          <div className={`text-center text-xs mb-4 ${
+            isDark ? 'text-gray-400' : 'text-gray-500'
+          }`}>
+            {totalStock > 0 ? `${totalStock} in stock` : 'Out of stock'}
+          </div>
+          
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ 
+              opacity: isHovered ? 1 : 0,
+              y: isHovered ? 0 : 10
+            }}
+            transition={{ duration: 0.3, delay: 0.1 }}
+            onClick={(e) => {
+              e.stopPropagation();
+              navigate(`/product/${product.id}`);
+            }}
+            disabled={totalStock === 0}
+            className={`
+              w-full py-2.5 px-4 rounded-xl font-semibold transition-all duration-300
+              flex items-center justify-center gap-2 text-sm
+              ${totalStock === 0 
+                ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
+                : 'bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white shadow-lg hover:shadow-xl'
+              }
+            `}
+          >
+            <ShoppingCart size={16} />
+            {totalStock === 0 ? 'Out of Stock' : 'View Details'}
+          </motion.button>
+        </div>
+        
+        {/* Shimmer Effect */}
+        <motion.div
+          initial={{ x: '-100%' }}
+          animate={{ x: isHovered ? '100%' : '-100%' }}
+          transition={{ duration: 0.8, ease: "easeInOut" }}
+          className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent pointer-events-none"
+        />
+      </motion.div>
+    </motion.div>
+  );
+};
+
+export default ProductCard;
