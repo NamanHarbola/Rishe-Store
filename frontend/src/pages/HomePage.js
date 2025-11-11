@@ -4,6 +4,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { ShoppingBag, Truck, Shield, Award, ArrowRight, Sparkles } from 'lucide-react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
+import ProductCard from '../components/ProductCard';
+import { useTheme } from '../context/ThemeContext';
 import axios from 'axios';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
