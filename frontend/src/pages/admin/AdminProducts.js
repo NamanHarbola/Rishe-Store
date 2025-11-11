@@ -29,8 +29,9 @@ const AdminProducts = () => {
     category: 'shirts',
     featured: false,
     images: [{ url: '', alt: '' }],
-    variants: [{ color: '', color_code: '#000000', sizes: { S: 0, M: 0, L: 0, XL: 0, XXL: 0 } }]
+    variants: [{ color: 'White', color_code: '#FFFFFF', sizes: { S: 0, M: 0, L: 0, XL: 0, XXL: 0 } }]
   });
+  const [activeVariantIndex, setActiveVariantIndex] = useState(0);
 
   useEffect(() => {
     fetchProducts();
