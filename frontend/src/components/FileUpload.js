@@ -13,11 +13,14 @@ const FileUpload = ({ onUpload, accept = 'image/*', maxSize = 5, multiple = fals
     const files = Array.from(e.target.files);
     if (!files.length) return;
 
+    console.log('Files selected:', files);
     setUploading(true);
     const uploadedFiles = [];
 
     try {
       for (const file of files) {
+        console.log('Processing file:', file.name, file.type, file.size);
+        
         // Validate file
         const isImage = accept.includes('image');
         const isVideo = accept.includes('video');
@@ -39,15 +42,21 @@ const FileUpload = ({ onUpload, accept = 'image/*', maxSize = 5, multiple = fals
 
         // Convert to base64
         const base64 = await fileToBase64(file);
-        uploadedFiles.push({
+        console.log('File converted to base64, length:', base64.length);
+        
+        const fileData = {
           name: file.name,
           type: file.type,
           data: base64,
           preview: base64
-        });
+        };
+        
+        uploadedFiles.push(fileData);
+        console.log('File added to upload array');
       }
 
       if (uploadedFiles.length > 0) {
+        console.log('Setting previews and calling onUpload');
         setPreviews(multiple ? [...previews, ...uploadedFiles] : uploadedFiles);
         onUpload(multiple ? uploadedFiles : uploadedFiles[0]);
         toast.success(`${uploadedFiles.length} file(s) uploaded successfully`);
@@ -57,6 +66,10 @@ const FileUpload = ({ onUpload, accept = 'image/*', maxSize = 5, multiple = fals
       toast.error('Failed to upload files');
     } finally {
       setUploading(false);
+      // Clear the input
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
     }
   };
 
